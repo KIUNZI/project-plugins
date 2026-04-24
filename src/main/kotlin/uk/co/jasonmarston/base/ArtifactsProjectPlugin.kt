@@ -4,7 +4,10 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.publish.tasks.GenerateModuleMetadata
 import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.api.tasks.testing.Test
+import org.gradle.external.javadoc.JavadocMemberLevel
+import org.gradle.external.javadoc.StandardJavadocDocletOptions
 
 @Suppress("unused")
 class ArtifactsProjectPlugin : Plugin<Project> {
@@ -16,6 +19,12 @@ class ArtifactsProjectPlugin : Plugin<Project> {
 
             tasks.withType(Test::class.java).configureEach {
                 useJUnitPlatform()
+            }
+
+            pluginManager.withPlugin("java") {
+                tasks.withType(Javadoc::class.java).configureEach {
+                    (options as StandardJavadocDocletOptions).memberLevel = JavadocMemberLevel.PUBLIC
+                }
             }
 
             tasks.withType(JavaCompile::class.java).configureEach {

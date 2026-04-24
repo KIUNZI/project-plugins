@@ -15,6 +15,12 @@ class QuarkusLibraryProjectPlugin : Plugin<Project> {
             pluginManager.apply("org.kordamp.gradle.jandex")
             pluginManager.apply("uk.co.jasonmarston.project.standards.java-library")
 
+            pluginManager.withPlugin("org.kordamp.gradle.jandex") {
+                tasks.matching { it.name == "javadoc" }.configureEach {
+                    dependsOn("jandex")
+                }
+            }
+
             dependencies.apply {
                 constraints.apply {
                     add("implementation",
