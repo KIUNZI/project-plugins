@@ -1,43 +1,21 @@
 @file:Suppress("SpellCheckingInspection")
 
-import uk.co.jasonmarston.build.utility.configString
-
 plugins {
   `kotlin-dsl`
   `java-gradle-plugin`
   `maven-publish`
 }
 
-group = "uk.co.jasonmarston"
-version = providers.gradleProperty("buildStandardsVersion")
+group = providers.gradleProperty("pluginGroup").get()
+version = providers.gradleProperty("pluginVersion")
   .orElse("1.0.0-SNAPSHOT")
   .get()
-
-val repoUrl = providers.configString("artifacts.repo.url")
-val repoUser = providers.configString("artifacts.repo.user")
-val repoToken = providers.configString("artifacts.repo.token")
-
-publishing {
-  repositories {
-    maven {
-      name = "Artifacts"
-      url = uri(repoUrl.get())
-      credentials {
-        username = repoUser.get()
-        password = repoToken.get()
-      }
-      authentication {
-        create("basic", BasicAuthentication::class.java)
-      }
-    }
-  }
-}
 
 dependencies {
   implementation("org.gradlex.extra-java-module-info:org.gradlex.extra-java-module-info.gradle.plugin:1.14")
   implementation("io.quarkus:io.quarkus.gradle.plugin:3.31.3")
   implementation("org.kordamp.gradle.jandex:org.kordamp.gradle.jandex.gradle.plugin:1.0.0")
-  compileOnly("uk.co.jasonmarston.kiunzi:conventions-support:1.0-SNAPSHOT")
+  compileOnly("uk.co.jasonmarston.kiunzi:conventions-support:1.0.0")
 }
 
 gradlePlugin {
@@ -81,6 +59,9 @@ java {
 
 kotlin {
   jvmToolchain(17)
+  compilerOptions {
+    jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+  }
 }
 
 tasks.withType<JavaCompile>().configureEach {
