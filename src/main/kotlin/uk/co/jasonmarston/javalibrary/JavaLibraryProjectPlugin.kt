@@ -20,6 +20,7 @@ class JavaLibraryProjectPlugin : Plugin<Project> {
             val versions = extensions.getByName("kiunziVersions") as KiunziVersions
 
             pluginManager.apply("java-library")
+            pluginManager.apply("maven-publish")
             pluginManager.apply("org.gradlex.extra-java-module-info")
             pluginManager.apply("uk.co.jasonmarston.project.standards.base")
 
