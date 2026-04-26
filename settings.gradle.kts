@@ -22,7 +22,7 @@ pluginManagement {
 }
 
 plugins {
-  id("uk.co.jasonmarston.standards.settings") version "1.0.0"
+  id("uk.co.jasonmarston.standards.settings") version "1.0.3"
   id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
