@@ -4,6 +4,7 @@ plugins {
   `kotlin-dsl`
   `java-gradle-plugin`
   `maven-publish`
+  id("org.jetbrains.dokka") version "1.9.20" // Dokka for KDoc HTML
 }
 
 group = providers.gradleProperty("pluginGroup").get()
@@ -16,8 +17,19 @@ dependencies {
   implementation("io.quarkus:io.quarkus.gradle.plugin:3.31.3")
   implementation("org.kordamp.gradle.jandex:org.kordamp.gradle.jandex.gradle.plugin:1.0.0")
   compileOnly("uk.co.jasonmarston.kiunzi:conventions-support:1.0.0")
+
+  // Kotlin unit testing dependencies
+  testImplementation("org.jetbrains.kotlin:kotlin-test")
+  testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+  testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+
+  // Dokka for KDoc HTML documentation
+  dokkaHtmlPlugin("org.jetbrains.dokka:kotlin-as-java-plugin:1.9.20")
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
 gradlePlugin {
   plugins {
     create("Base") {
@@ -66,4 +78,30 @@ kotlin {
 
 tasks.withType<JavaCompile>().configureEach {
   options.release.set(17)
+}
+
+// Dokka HTML JAR for publishing documentation
+tasks.register<Jar>("dokkaHtmlJar") {
+    group = "documentation"
+    archiveClassifier.set("javadoc")
+    from(tasks.dokkaHtml)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+            artifact(tasks.named("dokkaHtmlJar"))
+        }
+    }
+}
+
+// Workaround: Dokka does not support Gradle configuration cache yet
+// See: https://github.com/Kotlin/dokka/issues/1217
+if (project.tasks.findByName("dokkaHtml") != null) {
+    tasks.named("dokkaHtml", org.jetbrains.dokka.gradle.DokkaTask::class) {
+        @Suppress("DEPRECATION")
+        outputDirectory.set(buildDir.resolve("dokka"))
+        notCompatibleWithConfigurationCache("Dokka does not support configuration cache yet")
+    }
 }
