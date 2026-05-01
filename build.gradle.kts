@@ -30,6 +30,7 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
 gradlePlugin {
   plugins {
     create("Base") {
@@ -89,8 +90,8 @@ tasks.register<Jar>("dokkaHtmlJar") {
 
 publishing {
     publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
+        // java-gradle-plugin already creates pluginMaven; add docs there to avoid duplicate coordinates.
+        withType<MavenPublication>().matching { it.name == "pluginMaven" }.configureEach {
             artifact(tasks.named("dokkaHtmlJar"))
         }
     }

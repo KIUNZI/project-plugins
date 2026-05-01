@@ -10,7 +10,7 @@ fun Project.registerKiunziVersionsIfAbsent() {
 
         val javaVersion =
             providers.configString("version.java", true)
-                .orElse("21")
+                .orElse("25")
                 .get()
                 .toInt()
 
@@ -30,7 +30,7 @@ fun Project.registerKiunziVersionsIfAbsent() {
 
             junitVersion =
                 providers.configString("version.junit", true)
-                    .orElse("6.0.2")
+                    .orElse("6.0.3")
                     .get(),
 
             modelMapperVersion =
@@ -45,7 +45,7 @@ fun Project.registerKiunziVersionsIfAbsent() {
 
             quarkusPlatformVersion =
                 providers.configString("version.quarkus.platform", true)
-                    .orElse("3.32.3")
+                    .orElse("3.35.0")
                     .get()
         )
 
